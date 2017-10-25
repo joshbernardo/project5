@@ -39,5 +39,23 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    //Is it an a or c instruction
+    Not(in = instruction[15], out = ainstr);
+    Not(in = ainstr, out = cinstr);
+
+    //A Register
+    //Are we setting a to something in a c instruction
+    And(a = cinstr, b = instruction[5], out = computea);
+    //Is it a computation or a setting
+    Mux16(a = instruction, b = alu, sel = instruction[15], out = aorcinstr);
+    //Is it being used for a setting or a computation
+    Or(a = ainstr, b = computea, out = aload);
+    //Send the instruction through
+    Register(in = aorcinstr, load = aload, out = a);
+
+    //D Register
+    //Are we setting d to something
+    And(a = instruction[4], b = cinstr, out = dload);
+    //Send the computation through
+    Register(in = alu, load = dload, out = d);
 }
