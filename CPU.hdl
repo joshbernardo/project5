@@ -28,7 +28,7 @@
 CHIP CPU {
 
     IN  inM[16],         // M value input  (M = contents of RAM[A])
-        instruction[16], // Instruction for execution
+        instruction[16], // Instruction for execution "
         reset;           // Signals whether to re-start the current
                          // program (reset==1) or continue executing
                          // the current program (reset==0).
@@ -51,13 +51,13 @@ CHIP CPU {
     //Is it being used for a setting or a computation
     Or(a = ainstr, b = computea, out = aload);
     //Send the instruction through
-    Register(in = aorcinstr, load = aload, out = a);
+    ARegister(in = aorcinstr, load = aload, out = a);
 
     //D Register
     //Are we setting d to something
     And(a = instruction[4], b = cinstr, out = dload);
     //Send the computation through
-    Register(in = alu, load = dload, out = d);
+    DRegister(in = alu, load = dload, out = d);
 
     //ALU
     //Get y
