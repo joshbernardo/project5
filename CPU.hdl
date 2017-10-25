@@ -81,4 +81,16 @@ CHIP CPU {
     Or(a = jltjeq, b = jgt, out = letsjump);
     //Let's jump
     And(a = cinstr, b = letsjump, out = jmp);
+
+    //outM
+    And16(a = alu, b = true, out = outM);
+
+    //writeM
+    And(a = cinstr, b = instruction[3], out = writeM);
+
+    //addressM
+    And16(a = a, b = true, out[0..14] = addressM);
+
+    //PC
+    PC(in = a, load = jmp, inc = true, reset = reset, out[0..14] = pc);
 }
