@@ -58,4 +58,27 @@ CHIP CPU {
     And(a = instruction[4], b = cinstr, out = dload);
     //Send the computation through
     Register(in = alu, load = dload, out = d);
+
+    //ALU
+    //Get y
+    Mux16(a = a, b = inM, sel = instruction[12], out = y);
+    //Run the ALU
+    ALU(x = d, y = y, zx = instruction[11], nx = instruction[10], zy = instruction[9], ny = instruction[8], f = instruction[7], no = instruction[6], out = alu, zr = zero, ng = neg);
+
+    //Jumps
+    //Jump less than zero
+    And(a = instruction[2], b = neg, out = jlt);
+    //Jump equal to zero
+    And(a = instruction[1], b = zero, out = jeq);
+    //Get a notzero and notneg to compute if the alu is positive
+    Not(in = zero, out = notzero);
+    Not(in = neg, out = notneg);
+    And(a = notzero, b = notneg, out = pos);
+    //Jump greater than zero
+    And(a = instruction[0], b = pos, out = jgt);
+    //Do we jump
+    Or(a = jlt, b = jeq, out = jltjeq);
+    Or(a = jltjeq, b = jgt, out = letsjump);
+    //Let's jump
+    And(a = cinstr, b = letsjump, out = jmp);
 }
